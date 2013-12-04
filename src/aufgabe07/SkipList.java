@@ -120,6 +120,15 @@ public class SkipList<K extends Comparable<K>, V> implements SortedDictionary<K,
         };
     }
 
+    @Override
+    public V get(K key) {
+        Node n = this.search(key).pop();
+        if (n.isNormal && n.key.compareTo(key) == 0) {
+            return n.value;
+        }
+        return null;
+    }
+
     // =============================
     // === DIVERSE HILFSMETHODEN ===
     // =============================
@@ -144,14 +153,6 @@ public class SkipList<K extends Comparable<K>, V> implements SortedDictionary<K,
         this.createHeadTail();
         this.insertAfterHorizontal(this.head, result);
         return result;
-    }
-
-    public V get(K key) {
-        Node n = this.search(key).pop();
-        if (n.isNormal && n.key.compareTo(key) == 0) {
-            return n.value;
-        }
-        return null;
     }
 
     private void createHeadTail() {

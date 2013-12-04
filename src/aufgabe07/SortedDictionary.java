@@ -3,6 +3,16 @@ package aufgabe07;
 import java.util.Iterator;
 
 /**
+ * Aufgabe c
+ *
+ *
+ *
+ *
+ *
+ *
+ *
+ *
+ *
  * User: Julian
  * Date: 04.12.13
  * Time: 16:40

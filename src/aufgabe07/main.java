@@ -1,5 +1,7 @@
 package aufgabe07;
 
+import java.util.Iterator;
+
 /**
  * Created with IntelliJ IDEA.
  * User: Julian
@@ -39,6 +41,16 @@ public class main {
         }
 
         System.out.println(list.get(-152));
+
+
+        Iterator<String> itr = list.iterator();
+        System.out.println("===========================");
+        for(int i = 0; i < 10; i++){
+            String str = itr.next();
+            System.out.println(str);
+        }
+
+
     }
 
 }

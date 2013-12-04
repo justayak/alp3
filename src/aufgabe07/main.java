@@ -25,26 +25,29 @@ public class main {
 
         list.put(3, "drei_1");
 
-        for(int i = 10; i < 1000; i++){
+        for(int i = 10; i < 100; i++){
             list.put(i, "hallo_" + i);
         }
 
-        for(int i = 0; i < 1000; i+=15){
+        for(int i = 0; i < 100; i+=15){
             list.remove(i);
         }
 
-        for(int i = 0; i < 1000; i++){
+        for(int i = 0; i < 100; i++){
             list.put(i, "wooho_" + i);
         }
 
-        System.out.println(list.get(188));
+        System.out.println(list.get(18));
 
         System.out.println(list.get(30));
 
         System.out.println(list.min());
         System.out.println(list.max());
 
-
+        System.out.println("iterate: ");
+        for(String s : list){
+            System.out.println(s);
+        }
     }
 
 }

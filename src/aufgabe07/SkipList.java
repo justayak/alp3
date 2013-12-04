@@ -1,5 +1,6 @@
 package aufgabe07;
 
+import java.util.Iterator;
 import java.util.Random;
 import java.util.Stack;
 
@@ -8,7 +9,7 @@ import java.util.Stack;
  * Date: 04.12.13
  * Time: 14:30
  */
-public class SkipList<K extends Comparable<K>, V> implements SortedDictionary<K, V> {
+public class SkipList<K extends Comparable<K>, V> implements SortedDictionary<K, V>, Iterable<V> {
 
     private Node head;
     private Node tail;
@@ -18,18 +19,18 @@ public class SkipList<K extends Comparable<K>, V> implements SortedDictionary<K,
     }
 
     @Override
-    public V min(){
+    public V min() {
         Node min = this.bottom(this.head).next;
-        if(min.isNormal){
+        if (min.isNormal) {
             return min.value;
         }
         return null;
     }
 
     @Override
-    public V max(){
+    public V max() {
         Node max = this.bottom(this.tail).prev;
-        if (max.isNormal){
+        if (max.isNormal) {
             return max.value;
         }
         return null;
@@ -39,44 +40,96 @@ public class SkipList<K extends Comparable<K>, V> implements SortedDictionary<K,
     public void put(K key, V value) {
         Stack<Node> Q = this.search(key);
         Node n = Q.pop();
-        Node insert = new Node(key,value);
-        this.insertAfterHorizontal(n, insert);
-        while (coinToss()){
-            if (Q.empty()){
-                insert = newLine(insert);
-            }else {
-                n = Q.pop();
-                insert = new Node(key, insert);
-                this.insertAfterHorizontal(n, insert);
+        if (n.isNormal && n.key.compareTo(key) == 0) {
+            n.value = value;
+        } else {
+            Node insert = new Node(key, value);
+            this.insertAfterHorizontal(n, insert);
+            while (coinToss()) {
+                if (Q.empty()) {
+                    insert = newLine(insert);
+                } else {
+                    n = Q.pop();
+                    insert = new Node(key, insert);
+                    this.insertAfterHorizontal(n, insert);
+                }
             }
         }
     }
 
     @Override
-    public void remove(K key){
+    public void remove(K key) {
         Stack<Node> Q = this.search(key);
         Node n = Q.pop();
-        if (n.isNormal && n.key.compareTo(key) == 0){
-            while (n != null && n.isNormal && n.key.compareTo(key) == 0){
+        if (n.isNormal && n.key.compareTo(key) == 0) {
+            while (n != null && n.isNormal && n.key.compareTo(key) == 0) {
                 this.removeNode(n);
                 if (Q.empty()) n = null;
                 else n = Q.pop();
             }
-        }else {
+        } else {
             System.out.println("nop... nicht da");
         }
+    }
+
+    @Override
+    public Iterator<V> reverseIterator() {
+        final Node tail = this.bottom(this.tail);
+        return new Iterator<V>() {
+            Node n = tail;
+
+            @Override
+            public boolean hasNext() {
+                return n.prev.isNormal;
+            }
+
+            @Override
+            public V next() {
+                n = n.prev;
+                return n.value;
+            }
+
+            @Override
+            public void remove() {
+
+            }
+        };
+    }
+
+    @Override
+    public Iterator<V> iterator() {
+        final Node head = this.bottom(this.head);
+        return new Iterator<V>() {
+            Node n = head;
+
+            @Override
+            public boolean hasNext() {
+                return n.next.isNormal;
+            }
+
+            @Override
+            public V next() {
+                n = n.next;
+                return n.value;
+            }
+
+            @Override
+            public void remove() {
+
+            }
+        };
     }
 
     // =============================
     // === DIVERSE HILFSMETHODEN ===
     // =============================
 
-    private Node bottom(Node n){
+    private Node bottom(Node n) {
         while (n.down != null) n = n.down;
         return n;
     }
 
-    private void removeNode(Node n){
+    private void removeNode(Node n) {
         Node prev = n.prev;
         Node next = n.next;
         prev.next = next;
@@ -86,30 +139,30 @@ public class SkipList<K extends Comparable<K>, V> implements SortedDictionary<K,
         n.next = null;
     }
 
-    private Node newLine(Node n){
+    private Node newLine(Node n) {
         Node result = new Node(n.key, n);
         this.createHeadTail();
         this.insertAfterHorizontal(this.head, result);
         return result;
     }
 
-    public V get(K key){
+    public V get(K key) {
         Node n = this.search(key).pop();
-        if (n.key.compareTo(key) == 0){
+        if (n.key.compareTo(key) == 0) {
             return n.value;
         }
         return null;
     }
 
-    private void createHeadTail(){
-        if (this.head != null){
+    private void createHeadTail() {
+        if (this.head != null) {
             Node oldhead = this.head;
             Node oldtail = this.tail;
             this.head = new Node(false);
             this.tail = new Node(true);
             this.head.down = oldhead;
             this.tail.down = oldtail;
-        }else {
+        } else {
             this.head = new Node(false);
             this.tail = new Node(true);
         }
@@ -117,7 +170,7 @@ public class SkipList<K extends Comparable<K>, V> implements SortedDictionary<K,
         this.tail.prev = this.head;
     }
 
-    private void insertAfterHorizontal(Node e, Node insert){
+    private void insertAfterHorizontal(Node e, Node insert) {
         Node next = e.next;
         insert.next = next;
         insert.prev = e;
@@ -126,18 +179,18 @@ public class SkipList<K extends Comparable<K>, V> implements SortedDictionary<K,
     }
 
 
-    private Stack<Node> search(K key){
+    private Stack<Node> search(K key) {
         Node n = this.head;
         Stack<Node> Q = new Stack<Node>();
-        while (true){
-            if(n.next.isPlusInfinity || (n.next.key.compareTo(key) <0)){
+        while (true) {
+            if (n.next.isPlusInfinity || (n.next.key.compareTo(key) < 0)) {
                 Q.push(n);
-                if (n.down == null){
+                if (n.down == null) {
                     break;
-                }else {
+                } else {
                     n = n.down;
                 }
-            } else{
+            } else {
                 n = n.next;
             }
         }
@@ -145,6 +198,7 @@ public class SkipList<K extends Comparable<K>, V> implements SortedDictionary<K,
     }
 
     private static Random rand = new Random();
+
     private static boolean coinToss() {
         return rand.nextInt(2) == 0;
     }

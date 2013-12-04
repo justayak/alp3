@@ -32,7 +32,9 @@ public class JSkipList<K extends Comparable<K>, V> {
                 this.insertAfterHorizontal(n, insert);
             }
         }
+    }
 
+    public void remove(K key){
 
     }
 
@@ -41,6 +43,14 @@ public class JSkipList<K extends Comparable<K>, V> {
         this.createHeadTail();
         this.insertAfterHorizontal(this.head, result);
         return result;
+    }
+
+    public V get(K key){
+        Node n = this.search(key).pop();
+        if (n.key.compareTo(key) == 0){
+            return n.value;
+        }
+        return null;
     }
 
     private void createHeadTail(){
@@ -72,7 +82,7 @@ public class JSkipList<K extends Comparable<K>, V> {
         Node n = this.head;
         Stack<Node> Q = new Stack<Node>();
         while (true){
-            if(n.next.isPlusInfinity || (n.next.key.compareTo(key) <=0)){
+            if(n.next.isPlusInfinity || (n.next.key.compareTo(key) <0)){
                 Q.push(n);
                 if (n.down == null){
                     break;
@@ -86,15 +96,7 @@ public class JSkipList<K extends Comparable<K>, V> {
         return Q;
     }
 
-    private Node bottom(Node n){
-        while (n.down != null) {
-            n = n.down;
-        }
-        return n;
-    }
-
     private static Random rand = new Random();
-
     private static boolean coinToss() {
         return rand.nextInt(2) == 0;
     }
@@ -130,5 +132,4 @@ public class JSkipList<K extends Comparable<K>, V> {
             }
         }
     }
-
 }

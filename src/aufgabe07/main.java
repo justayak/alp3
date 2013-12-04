@@ -13,41 +13,32 @@ public class main {
 
         SkipList<Integer, String> list = new SkipList<Integer, String>();
 
-        System.out.println(list.min());
-        System.out.println(list.max());
+        for(int i = 0; i < 100; i++){
+            list.put(i, "hallo_" + i);
+        }
+
+        for(int i = 10; i < 100; i++){
+            list.put(i, "wooho_" + i);
+        }
 
         list.put(5, "fünf");
         list.put(9, "neun");
         list.put(2, "zwei");
         list.put(3, "drei");
 
-        System.out.println(list.get(3));
+        System.out.println("min: " + list.min());
+        System.out.println("max: " + list.max());
 
-        list.put(3, "drei_1");
-
-        for(int i = 10; i < 100; i++){
-            list.put(i, "hallo_" + i);
-        }
-
-        for(int i = 0; i < 100; i+=15){
+        for(int i = 10; i < 100; i+=10){
             list.remove(i);
         }
-
-        for(int i = 0; i < 100; i++){
-            list.put(i, "wooho_" + i);
-        }
-
-        System.out.println(list.get(18));
-
-        System.out.println(list.get(30));
-
-        System.out.println(list.min());
-        System.out.println(list.max());
 
         System.out.println("iterate: ");
         for(String s : list){
             System.out.println(s);
         }
+
+        System.out.println(list.get(-152));
     }
 
 }

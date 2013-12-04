@@ -91,7 +91,7 @@ public class SkipList<K extends Comparable<K>, V> implements SortedDictionary<K,
 
             @Override
             public void remove() {
-
+                throw new RuntimeException("dont touch me!!");
             }
         };
     }
@@ -115,7 +115,7 @@ public class SkipList<K extends Comparable<K>, V> implements SortedDictionary<K,
 
             @Override
             public void remove() {
-
+                throw new RuntimeException("dont touch me!!");
             }
         };
     }
@@ -148,7 +148,7 @@ public class SkipList<K extends Comparable<K>, V> implements SortedDictionary<K,
 
     public V get(K key) {
         Node n = this.search(key).pop();
-        if (n.key.compareTo(key) == 0) {
+        if (n.isNormal && n.key.compareTo(key) == 0) {
             return n.value;
         }
         return null;
@@ -183,7 +183,7 @@ public class SkipList<K extends Comparable<K>, V> implements SortedDictionary<K,
         Node n = this.head;
         Stack<Node> Q = new Stack<Node>();
         while (true) {
-            if (n.next.isPlusInfinity || (n.next.key.compareTo(key) < 0)) {
+            if (n.next.isPlusInfinity || (n.next.key.compareTo(key) > 0)) {
                 Q.push(n);
                 if (n.down == null) {
                     break;

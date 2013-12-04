@@ -12,6 +12,10 @@ public class main {
     public static void main(String[]args){
 
         SkipList<Integer, String> list = new SkipList<Integer, String>();
+
+        System.out.println(list.min());
+        System.out.println(list.max());
+
         list.put(5, "fünf");
         list.put(9, "neun");
         list.put(2, "zwei");
@@ -25,7 +29,20 @@ public class main {
             list.put(i, "hallo_" + i);
         }
 
+        for(int i = 0; i < 1000; i+=15){
+            list.remove(i);
+        }
+
+        for(int i = 0; i < 1000; i++){
+            list.put(i, "wooho_" + i);
+        }
+
         System.out.println(list.get(188));
+
+        System.out.println(list.get(30));
+
+        System.out.println(list.min());
+        System.out.println(list.max());
 
 
     }

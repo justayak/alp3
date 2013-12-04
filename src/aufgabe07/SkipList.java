@@ -8,7 +8,7 @@ import java.util.Stack;
  * Date: 04.12.13
  * Time: 14:30
  */
-public class SkipList<K extends Comparable<K>, V> {
+public class SkipList<K extends Comparable<K>, V> implements SortedDictionary<K, V> {
 
     private Node head;
     private Node tail;
@@ -17,7 +17,25 @@ public class SkipList<K extends Comparable<K>, V> {
         this.createHeadTail();
     }
 
+    @Override
+    public V min(){
+        Node min = this.bottom(this.head).next;
+        if(min.isNormal){
+            return min.value;
+        }
+        return null;
+    }
 
+    @Override
+    public V max(){
+        Node max = this.bottom(this.tail).prev;
+        if (max.isNormal){
+            return max.value;
+        }
+        return null;
+    }
+
+    @Override
     public void put(K key, V value) {
         Stack<Node> Q = this.search(key);
         Node n = Q.pop();
@@ -34,8 +52,38 @@ public class SkipList<K extends Comparable<K>, V> {
         }
     }
 
+    @Override
     public void remove(K key){
+        Stack<Node> Q = this.search(key);
+        Node n = Q.pop();
+        if (n.isNormal && n.key.compareTo(key) == 0){
+            while (n != null && n.isNormal && n.key.compareTo(key) == 0){
+                this.removeNode(n);
+                if (Q.empty()) n = null;
+                else n = Q.pop();
+            }
+        }else {
+            System.out.println("nop... nicht da");
+        }
+    }
 
+    // =============================
+    // === DIVERSE HILFSMETHODEN ===
+    // =============================
+
+    private Node bottom(Node n){
+        while (n.down != null) n = n.down;
+        return n;
+    }
+
+    private void removeNode(Node n){
+        Node prev = n.prev;
+        Node next = n.next;
+        prev.next = next;
+        next.prev = prev;
+        n.down = null;
+        n.prev = null;
+        n.next = null;
     }
 
     private Node newLine(Node n){
@@ -106,23 +154,27 @@ public class SkipList<K extends Comparable<K>, V> {
         public K key;
         public final boolean isPlusInfinity;
         public final boolean isMinusInfinity;
+        public final boolean isNormal;
         public Node next;
         public Node prev;
         public Node down;
 
         public Node(K key, V value) {
             this.isMinusInfinity = this.isPlusInfinity = false;
+            this.isNormal = true;
             this.key = key;
             this.value = value;
         }
 
         public Node(K key, Node down) {
             this.isMinusInfinity = this.isPlusInfinity = false;
+            this.isNormal = true;
             this.down = down;
             this.key = key;
         }
 
         public Node(boolean positive) {
+            this.isNormal = false;
             if (positive) {
                 this.isPlusInfinity = true;
                 this.isMinusInfinity = false;

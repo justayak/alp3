@@ -5,38 +5,34 @@ package aufgabe07;
  * Date: 03.12.13
  * Time: 18:39
  */
-public class DictionaryImpl<M> implements OrderedDictionary<String, M> {
+public class DictionaryImpl<K,V> implements OrderedDictionary<K, V> {
 
     private final int MAX_READABLE_CHAR = 126;
     private final int MIN_READABLE_CHAR = 33;
 
     @Override
-    public void put(String key, M value) {
+    public void put(K key, V value) {
 
     }
 
     @Override
-    public M get(String key) {
+    public V get(K key) {
         return null;
     }
 
     @Override
-    public void delete(String key) {
+    public void delete(K key) {
 
     }
 
-    private enum NodeType {
-        Root,
-        Gateway,
-        Value
+    private enum NodeType{
+        Normal,
+        PlusInfty,
+        MinusInfty
     }
-
 
     private class Node{
-        public M Value;
-        public Node Left;
-        public Node Right;
-        private Node[] children;
+
 
     }
 

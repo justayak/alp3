@@ -5,12 +5,12 @@ package aufgabe07;
  * Date: 03.12.13
  * Time: 18:28
  */
-public interface OrderedDictionary<String, M> {
+public interface OrderedDictionary<K, V> {
 
-    void put(String key, M value);
+    void put(K key, V value);
 
-    M get(String key);
+    V get(K key);
 
-    void delete(String key);
+    void delete(K key);
 
 }

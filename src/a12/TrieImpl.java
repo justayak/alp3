@@ -94,17 +94,23 @@ public class TrieImpl<T> implements Trie<T> {
             TrieNode<T> found = this.get(s, 0);
             if (found.childrenCount > 0) {
                 // runtergehen..
-                TrieNode<T> child = found.leftMost();
-                while (child.value == null) child = child.leftMost();
-                return child.value;
+                return found.nextMostLeftValue();
             } else {
                 // hochgehen..
-                TrieNode<T> parent = found.parent;
-                while (parent != null && (parent.childrenCount == 1 || parent.isRightMost())) parent = parent.parent;
-                if(parent.parent == null) return null; // Es gibt keinen succ!
-                for(TrieNode<T> node : parent.children){
-                    if(node != null){
-
+                TrieNode<T> node = found;
+                while (node.parent != null && (node.parent.childrenCount == 1 || node.isRightMost())){
+                    node = node.parent;
+                }
+                if(node.parent == null) return null; // Es gibt keinen succ!
+                boolean takeNext = false;
+                for(TrieNode<T> n : node.parent.children){
+                    if(n != null){
+                        if(n.character == node.character){
+                            takeNext = true;
+                        }else if(takeNext){
+                            if (n.value == null) return n.nextMostLeftValue();
+                            return n.value;
+                        }
                     }
                 }
             }
@@ -155,6 +161,12 @@ public class TrieImpl<T> implements Trie<T> {
             return sb.toString();
         }
 
+        private T nextMostLeftValue(){
+            TrieNode<T> child = this.leftMost();
+            while (child.value == null) child = child.leftMost();
+            return child.value;
+        }
+
         /**
          * scheiß-funktion
          * @return
@@ -162,9 +174,11 @@ public class TrieImpl<T> implements Trie<T> {
         private boolean isRightMost(){
             if(this.parent != null) {
                 if (this.parent.childrenCount == 1) return true;
-                for(int i = this.children.length - 1; i<=0;i++){
-                    if(this.children[i].character == this.character)return true;
-                    else return false;
+                for(int i = parent.children.length - 1; i>0;i--){
+                    if (parent.children[i] != null){
+                        if(parent.children[i].character == this.character)return true;
+                        else return false;
+                    }
                 }
             }
             return false;

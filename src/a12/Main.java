@@ -29,6 +29,7 @@ public class Main {
             System.out.println(trie.get("hauf"));
 
             System.out.println(trie.succ("hauf"));
+            System.out.println(trie.succ("demolo"));
 
             System.out.println(trie.toString());
 

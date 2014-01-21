@@ -10,4 +10,6 @@ public interface Trie<T> {
     Trie<T> put(String s, T v) throws ShitIsAlreadyThereException;
     T get(String s) throws ShitNotThereException;
     Trie<T> remove(String s) throws ShitNotThereException;
+    T succ(String s) throws ShitNotThereException;
+
 }

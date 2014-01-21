@@ -16,32 +16,24 @@ public class TrieImpl<T> implements Trie<T> {
 
     @Override
     public Trie<T> put(String s, T v) throws ShitIsAlreadyThereException {
-        if (s.length() == 0) {
-            if (this.root.value == null) this.root.value = v;
-            else throw new ShitIsAlreadyThereException();
-        } else {
-            this.root.put(s, 0, v);
-        }
+        this.root.put(s, 0, v);
         return this;
     }
 
     @Override
     public T get(String s) throws ShitNotThereException {
-        if (s.length() == 0) {
-            if (this.root.value == null) throw new ShitNotThereException();
-            else return this.root.value;
-        } else {
-            return this.root.get(s, 0);
-        }
+        return (T) this.root.get(s, 0).value;
     }
 
     @Override
     public Trie<T> remove(String s) throws ShitNotThereException {
-        if(s.length() == 0){
-            if(this.root.value == null) throw new ShitNotThereException();
-            else this.root.value = null;
-        }else this.root.remove(s,0);
+        this.root.remove(s,0);
         return this;
+    }
+
+    @Override
+    public T succ(String s) throws ShitNotThereException {
+        return null;
     }
 
     @Override
@@ -85,15 +77,21 @@ public class TrieImpl<T> implements Trie<T> {
             }
         }
 
-        public T get(String s, int pos) throws ShitNotThereException {
+        public TrieNode get(String s, int pos) throws ShitNotThereException {
             if (s.length() == pos) {
                 if (this.value == null) throw new ShitNotThereException();
-                else return this.value;
+                else return this;
             } else {
                 int p = s.charAt(pos) - 'a';
                 if (this.children[p] == null) throw new ShitNotThereException();
-                else return (T) this.children[p].get(s, pos + 1);
+                else return this.children[p].get(s, pos + 1);
             }
+        }
+
+        public T succ(String s) throws ShitNotThereException {
+            TrieNode found = this.get(s,0);
+
+            return null;
         }
 
         /**

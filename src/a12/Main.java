@@ -24,9 +24,12 @@ public class Main {
 
             System.out.println(trie.toString());
 
-            trie.remove("haufen");
+            //trie.remove("haufen");
 
             System.out.println(trie.get("hauf"));
+
+            System.out.println(trie.succ("hauf"));
+
             System.out.println(trie.toString());
 
 

@@ -27,17 +27,17 @@ public class TrieImpl<T> implements Trie<T> {
 
     @Override
     public Trie<T> remove(String s) throws ShitNotThereException {
-        this.root.remove(s,0);
+        this.root.remove(s, 0);
         return this;
     }
 
     @Override
     public T succ(String s) throws ShitNotThereException {
-        return null;
+        return this.root.succ(s);
     }
 
     @Override
-    public String toString(){
+    public String toString() {
         return this.root.toString();
     }
 
@@ -50,16 +50,18 @@ public class TrieImpl<T> implements Trie<T> {
         T value = null;
         char character;
         int childrenCount = 0;
-        TrieNode[] children = new TrieNode[26];
+        TrieNode<T>[] children = new TrieNode[26];
+        TrieNode<T> parent;
 
-        public TrieNode() {
+        private TrieNode() {
         }
 
-        public TrieNode(char c) {
+        public TrieNode(char c, TrieNode<T> parent) {
             this.character = c;
+            this.parent = parent;
         }
 
-        public boolean isDead(){
+        public boolean isDead() {
             return this.childrenCount == 0 && this.value == null;
         }
 
@@ -70,7 +72,7 @@ public class TrieImpl<T> implements Trie<T> {
             } else {
                 int p = s.charAt(pos) - 'a';
                 if (this.children[p] == null) {
-                    this.children[p] = new TrieNode<T>(s.charAt(pos));
+                    this.children[p] = new TrieNode<T>(s.charAt(pos), this);
                     this.childrenCount += 1;
                 }
                 this.children[p].put(s, pos + 1, v);
@@ -89,8 +91,23 @@ public class TrieImpl<T> implements Trie<T> {
         }
 
         public T succ(String s) throws ShitNotThereException {
-            TrieNode found = this.get(s,0);
+            TrieNode<T> found = this.get(s, 0);
+            if (found.childrenCount > 0) {
+                // runtergehen..
+                TrieNode<T> child = found.leftMost();
+                while (child.value == null) child = child.leftMost();
+                return child.value;
+            } else {
+                // hochgehen..
+                TrieNode<T> parent = found.parent;
+                while (parent != null && (parent.childrenCount == 1 || parent.isRightMost())) parent = parent.parent;
+                if(parent.parent == null) return null; // Es gibt keinen succ!
+                for(TrieNode<T> node : parent.children){
+                    if(node != null){
 
+                    }
+                }
+            }
             return null;
         }
 
@@ -102,7 +119,7 @@ public class TrieImpl<T> implements Trie<T> {
         public boolean remove(String s, int pos) throws ShitNotThereException {
             if (s.length() == pos) {
                 if (this.value == null) throw new ShitNotThereException();
-                else{
+                else {
                     this.value = null;
                     return this.isDead();
                 }
@@ -110,7 +127,7 @@ public class TrieImpl<T> implements Trie<T> {
                 int p = s.charAt(pos) - 'a';
                 if (this.children[p] == null) throw new ShitNotThereException();
                 else {
-                    if(this.children[p].remove(s, pos + 1)){
+                    if (this.children[p].remove(s, pos + 1)) {
                         // Der vorherige Knoten war ein Blatt: lösche ihn Komplett!
                         this.children[p] = null;
                         this.childrenCount -= 1;
@@ -124,18 +141,43 @@ public class TrieImpl<T> implements Trie<T> {
         }
 
         @Override
-        public String toString(){
+        public String toString() {
             StringBuilder sb = new StringBuilder();
-            for(TrieNode node : this.children){
-                if(node != null){
+            for (TrieNode node : this.children) {
+                if (node != null) {
                     sb.append(node.character);
-                    if(node.value != null) sb.append("*");
+                    if (node.value != null) sb.append("*");
                     sb.append("[");
                     sb.append(node.toString());
                     sb.append("]");
                 }
             }
             return sb.toString();
+        }
+
+        /**
+         * scheiß-funktion
+         * @return
+         */
+        private boolean isRightMost(){
+            if(this.parent != null) {
+                if (this.parent.childrenCount == 1) return true;
+                for(int i = this.children.length - 1; i<=0;i++){
+                    if(this.children[i].character == this.character)return true;
+                    else return false;
+                }
+            }
+            return false;
+        }
+
+        /**
+         * finde das kleinste (lexikalische) Child
+         * @return
+         */
+        private TrieNode leftMost() {
+            if (this.childrenCount == 0) return null;
+            for(TrieNode node : this.children) if (node != null) return node;
+            return null;
         }
     }
 }

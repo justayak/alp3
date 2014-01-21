@@ -97,7 +97,7 @@ public class TrieImpl<T> implements Trie<T> {
         }
 
         /**
-         * @return {Boolean} wenn {TRUE}, dann sind wir ein "Leaf", d.h. wir können komplett
+         * @return {Boolean} wenn {TRUE}, dann sind wir ein "Leaf" ohne Value, d.h. wir können komplett
          * gelöscht werden!
          * @throws ShitNotThereException
          */
